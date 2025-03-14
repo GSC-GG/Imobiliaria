@@ -1,0 +1,7 @@
+
+*JRE
+*Referenced
+*.classpath
+*.project
+bin
+*.class
