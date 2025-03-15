@@ -7,15 +7,14 @@ public class Imobiliaria {
 	private Integer idImobiliaria;
 	private String cnpj;
 	private List<Corretor> listaCorretor;
+	private List<Funcionario> listaFuncionario;
 	private List<Imovel> listaImovel;
-	private List<ImovelLivre> listaImovelLivre;
 	
 	public Imobiliaria(Integer idImobiliaria, String cnpj) {
 		this.idImobiliaria = idImobiliaria;
 		this.cnpj = cnpj;
 		this.listaCorretor = null;
 		this.listaImovel = null;
-		this.listaImovelLivre = null;
 	}
 	
 	public Imobiliaria(Integer idImobiliaria) {
@@ -23,7 +22,6 @@ public class Imobiliaria {
 		this.cnpj = null;
 		this.listaCorretor = null;
 		this.listaImovel = null;
-		this.listaImovelLivre = null;
 	}
 	
 	public Integer getIdImobiliaria() {
@@ -50,22 +48,20 @@ public class Imobiliaria {
 		this.listaCorretor = listaCorretor;
 	}
 
+	public List<Funcionario> getListaFuncionario() {
+		return listaFuncionario;
+	}
+	
+	public void setListaFuncionario(List<Funcionario> listaFuncionario) {
+		this.listaFuncionario= listaFuncionario;
+	}
+
 	public List<Imovel> getListaImovel() {
 		return listaImovel;
 	}
 
 	public void setListaImovel(List<Imovel> listaImovel) {
 		this.listaImovel = listaImovel;
-	}
-
-	public List<ImovelLivre> getListaImovelLivre() {
-		return listaImovelLivre;
-	}
-
-	public void setListaImovelLivre(List<ImovelLivre> listaImovelLivre) {
-		this.listaImovelLivre = listaImovelLivre;
-	}
-	
-	
+	}	
 	
 }

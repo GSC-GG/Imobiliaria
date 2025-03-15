@@ -55,7 +55,7 @@ public class DataLocatario {
         return null;
     }
     
-    public Locatario listaVisita(Locatario locatario) {
+    public Locatario listaAlugueis(Locatario locatario) {
     	try {
     		List<Aluguel> alugueis = new ArrayList<Aluguel>();
     		String sql = "CALL listar_Alugueis("+locatario.getIdLocatario()+");";

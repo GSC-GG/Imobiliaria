@@ -1,6 +1,7 @@
 package banco;
 
 import model.Corretor;
+import model.Funcionario;
 import model.Imovel;
 import model.ImovelLivre;
 import model.Imobiliaria;
@@ -77,6 +78,34 @@ public class DataImobiliaria {
     	}
     	return null;
     }
+    
+    public Imobiliaria listaFuncionario(Imobiliaria imobiliaria) {
+    	try {
+    		List<Funcionario> funcionarios = new ArrayList<Funcionario>();
+    		String sql = "CALL listar_Funcionarios("+imobiliaria.getIdImobiliaria()+");";
+			PreparedStatement statement = connection.getConnection().prepareStatement(sql);
+			ResultSet rs = statement.executeQuery();
+			
+			if (rs != null && rs.next()) {
+				while (rs.next()) {
+
+					Funcionario funcionario = new Funcionario(
+							rs.getInt("idFuncionario"),
+							rs.getString("nome"),
+							rs.getString("telefone"),
+							rs.getString("email")
+					);
+					funcionarios.add(funcionario);
+				}
+				imobiliaria.setListaFuncionario(funcionarios);
+			}
+			return imobiliaria;
+    	}
+    	catch(SQLException e) {
+			e.printStackTrace();
+    	}
+    	return null;
+    }
 
     public Imobiliaria listaImovel(Imobiliaria imobiliaria) {
     	try {
@@ -91,14 +120,25 @@ public class DataImobiliaria {
 					proprietario = new Proprietario();
 					proprietario.setIdProprietario(rs.getInt("idProprietario"));
 					proprietario = new DataProprietario().consultarProprietario(proprietario);
+					
+					if(rs.getString("situacao") != "Disponivel") {
 
-					Imovel imovel = new Imovel(
-							rs.getInt("idImovel"),
-							rs.getString("situacao"), 
-							rs.getString("endereco"), 
-							proprietario
-							);
-					imoveis.add(imovel);
+						Imovel imovel = new Imovel(
+								rs.getInt("idImovel"),
+								rs.getString("endereco"), 
+								proprietario
+								);
+						imoveis.add(imovel);
+						
+					} else {
+
+						ImovelLivre imovel = new ImovelLivre(
+								rs.getInt("idImovel"),
+								rs.getString("endereco"), 
+								proprietario
+								);
+						imoveis.add(imovel);
+					}
 				}
 				imobiliaria.setListaImovel(imoveis);
 			}
@@ -111,35 +151,4 @@ public class DataImobiliaria {
     	//return null;
     }
 
-    public Imobiliaria listaImovelLivre(Imobiliaria imobiliaria) {
-    	try {
-    		List<ImovelLivre> imoveis = new ArrayList<ImovelLivre>();
-    		String sql = "CALL listar_ImoveisLivres("+imobiliaria.getIdImobiliaria()+");";
-			PreparedStatement statement = connection.getConnection().prepareStatement(sql);
-			ResultSet rs = statement.executeQuery();
-			
-			if (rs != null && rs.next()) {
-				Proprietario proprietario;
-				while (rs.next()) {
-					proprietario = new Proprietario(rs.getInt("idProprietario"));
-					proprietario = new DataProprietario().consultarProprietario(proprietario);
-
-					ImovelLivre imovelLivre = new ImovelLivre(
-							rs.getInt("idImovelLivre"),
-							rs.getString("situacao"), 
-							rs.getString("endereco"), 
-							proprietario
-							);
-					imoveis.add(imovelLivre);
-				}
-				imobiliaria.setListaImovelLivre(imoveis);
-			}
-			//return imobiliaria;
-    	}
-    	catch(SQLException e) {
-			e.printStackTrace();
-    	}
-		return imobiliaria;
-    	//return null;
-    }
 }

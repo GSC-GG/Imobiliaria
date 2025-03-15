@@ -29,9 +29,8 @@ public class DataCorretor {
     
     public Corretor consultarCorretor(Corretor corretor) {
         try {
-        	String sql = "CALL consultar_Corretor(?);";
+        	String sql = "CALL consultar_Corretor("+corretor.getIdCorretor()+");";
             PreparedStatement statement = connection.getConnection().prepareStatement(sql);
-            statement.setInt(1, corretor.getIdCorretor());
             ResultSet rs = statement.executeQuery();
             if (rs != null && rs.next()) {
                 corretor.setIdCorretor(rs.getInt("idCorretor"));

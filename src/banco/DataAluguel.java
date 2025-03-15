@@ -1,6 +1,7 @@
 package banco;
 
 import model.Aluguel;
+import model.Locatario;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,11 +15,11 @@ public class DataAluguel {
         this.connection = new DBConnection();
     }
 
-    public void incluirAluguel(Aluguel aluguel, Integer idLocatario, Double valorAluguel) {
+    public void incluirAluguel(Aluguel aluguel, Locatario locatario, Double valorAluguel) {
         try {
             String sql = "CALL inserir_Aluguel(?, ?, ?);";
             PreparedStatement statement = connection.getConnection().prepareStatement(sql);
-            statement.setInt(1, idLocatario);
+            statement.setInt(1, locatario.getIdLocatario());
             statement.setDouble(2, valorAluguel);
             statement.setDate(3, java.sql.Date.valueOf(aluguel.getDataVencimento())); // Convertendo LocalDate para java.sql.Date
             statement.execute();
@@ -28,17 +29,14 @@ public class DataAluguel {
         }
     }
     
-    public Aluguel consultarAluguel(Integer idAluguel) {
-        Aluguel aluguel = null;
+    public Aluguel consultarAluguel(Aluguel aluguel) {
         try {
-            String sql = "SELECT * FROM Aluguel WHERE idAluguel = ?;";
+            String sql = "CALL consultar_Aluguel("+aluguel.getIdAluguel()+");";
             PreparedStatement statement = connection.getConnection().prepareStatement(sql);
-            statement.setInt(1, idAluguel);
             ResultSet rs = statement.executeQuery(sql);
             if (rs != null && rs.next()) {
                 aluguel = new Aluguel(
                     rs.getInt("idAluguel"),
-                    rs.getInt("idLocatario"),
                     rs.getDouble("valor"),
                     rs.getObject("dataVencimento", LocalDate.class),
                     rs.getObject("dataPagamento", LocalDate.class),
@@ -51,9 +49,9 @@ public class DataAluguel {
         return aluguel;
     }
     
-    public void pagarAluguel(Integer idAluguel) {
+    public void pagarAluguel(Aluguel aluguel) {
     	try {
-    		String sql = "CALL pagar_Aluguel("+idAluguel+");";
+    		String sql = "CALL pagar_Aluguel("+aluguel.getIdAluguel()+");";
     		PreparedStatement statement = connection.getConnection().prepareStatement(sql);
             statement.execute();
             statement.close();
@@ -63,9 +61,9 @@ public class DataAluguel {
         }
     }
     
-    public void viraMesAluguel(Integer idAluguel) {
+    public void viraMesAluguel(Aluguel aluguel) {
     	try {
-    		String sql = "CALL mes_Aluguel("+idAluguel+");";
+    		String sql = "CALL mes_Aluguel("+aluguel.getIdAluguel()+");";
             PreparedStatement statement = connection.getConnection().prepareStatement(sql);
             ResultSet rs = statement.executeQuery(sql);
             if (rs != null && rs.next()) {

@@ -4,12 +4,12 @@ import java.time.LocalDate;
 
 public class Contrato {
 	private Integer idContrato;
-	private Imovel imovel;
+	private ImovelAlugado imovel;
 	private Double valorAluguel;
 	private LocalDate dataAssinatura;
 	private String status;
 	
-	public Contrato(Integer idContrato, Double valorAluguel, Imovel imovel, LocalDate dataAssinatura,
+	public Contrato(Integer idContrato, Double valorAluguel, ImovelAlugado imovel, LocalDate dataAssinatura,
 			String status) {
 		this.idContrato = idContrato;
 		this.imovel = imovel;
@@ -33,7 +33,7 @@ public class Contrato {
 	public Imovel getImovel() {
 		return imovel;
 	}
-	public void setImovel(Imovel imovel) {
+	public void setImovel(ImovelAlugado imovel) {
 		this.imovel = imovel;
 	}
 	public LocalDate getDataAssinatura() {

@@ -6,8 +6,8 @@ public class ImovelLivre extends Imovel{
 	private List<Visita> listaVisita;
 	private List<Vistoria> listaVistoria;
 
-	public ImovelLivre(Integer idImovel, String status, String endereco, Proprietario proprietario) {
-		super(idImovel, status, endereco, proprietario);
+	public ImovelLivre(Integer idImovel, String endereco, Proprietario proprietario) {
+		super(idImovel, endereco, proprietario);
 		this.listaVisita = null;
 		this.listaVistoria = null;
 	}

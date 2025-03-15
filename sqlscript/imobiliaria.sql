@@ -29,6 +29,7 @@ create table Corretor(
 
 create table Funcionario(
 	idFuncionario int(5) auto_increment primary key,
+    idImobiliaria int(5) not null,
     nome varchar(50) not null,
 	telefone char(11) not null,
     email varchar(50) not null
@@ -112,7 +113,7 @@ BEGIN
     WHERE idImovel = v_idImovel;
 END $$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `inserir_Corretor`(IN `v_nome` VARCHAR(50), IN `v_telefone` CHAR(11), IN `v_email` VARCHAR(50))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `inserir_Corretor`(IN `v_idImobiliaria` INT(5), IN `v_nome` VARCHAR(50), IN `v_telefone` CHAR(11), IN `v_email` VARCHAR(50))
 BEGIN
     INSERT INTO Corretor (nome, telefone, email) VALUES (v_nome, v_telefone, v_email);
 END $$
@@ -353,29 +354,43 @@ BEGIN
     WHERE idAluguel = v_idAluguel;
 END $$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `mes_Aluguel` (IN `v_idAluguel` INT(5))
-BEGIN
-	SELECT Aluguel.dataVencimento, CURDATE(), situacao FROM Aluguel
-    WHERE idAluguel = v_idAluguel;
-END $$
+-- CREATE DEFINER=`root`@`localhost` PROCEDURE `mes_Aluguel` (IN `v_idAluguel` INT(5))
+-- BEGIN
+-- 	CASE
+-- 		WHEN CURDATE(
+-- 	SELECT Aluguel.dataVencimento, CURDATE(), situacao FROM Aluguel
+--     WHERE idAluguel = v_idAluguel;
+-- END $$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pagamento_Atrasado` (IN `v_idAluguel` INT(5))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `verifica_Pagamento_Aluguel` ()
 BEGIN
-	CASE
-		WHEN CURDATE() > Aluguel.dataVencimento THEN
-			UPDATE Aluguel
-            EXECUTE encerrar_Contrato(@)
+	DECLARE v_idLocatario INT(5);
+	DECLARE v_idImovel INT(5);
+	DECLARE v_idContrato INT(5);
+    
+	SELECT idLocatario INTO v_idLocatario
+    FROM Aluguel WHERE CURDATE() > dataVencimento;
+    
+	SELECT idImovel INTO v_idImovel
+	FROM Imovel WHERE idLocatario = v_idLocatario;
+    
+    SELECT idContrato INTO v_idContrato
+    FROM Contrato WHERE idImovel = v_idImovel;
+    
+	CALL encerrar_Contrato(v_idContrato);
             
-		WHEN CURDATE() > Aluguel.dataPagamento THEN
-			UPDATE Aluguel
-			SET situacao = 'Atrasado', valorPagamento = valorPagamento * 1.25 -- por algum motivo nao consegui usar *=
-			WHERE idAluguel = v_idAluguel;
-	END CASE;
+	UPDATE Aluguel
+    SET situacao = 'Atrasado', valorPagamento = valorPagamento * 1.25
+    WHERE CURDATE() > dataPagamento AND CURDATE() < dataVencimento;
 END $$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `listar_Corretores` (IN `v_idImobiliaria` INT(5))
 	SELECT Corretor.* FROM Corretor 
     WHERE Corretor.idImobiliaria = v_idImobiliaria;
+    
+CREATE DEFINER=`root`@`localhost` PROCEDURE `listar_Funcionarios` (IN `v_idImobiliaria` INT(5))
+	SELECT Funcionario.* FROM Funcionario 
+    WHERE Funcionario.idImobiliaria = v_idImobiliaria;
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `listar_Visitas` (IN `v_idAgenda` INT (5))
 	SELECT Visita.* FROM Visita
@@ -393,9 +408,9 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `listar_Imoveis` (IN `v_idImobiliari
 	SELECT Imovel.* FROM Imovel
     WHERE Imovel.idImobiliaria = v_idImobiliaria $$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `listar_ImoveisLivres` (IN `v_idImobiliaria` INT(5))
-	SELECT Imovel.* FROM Imovel
-    WHERE Imovel.idImobiliaria = v_idImobiliaria AND 
-		Imovel.situacao = 'Disponivel' $$
+-- CREATE DEFINER=`root`@`localhost` PROCEDURE `listar_ImoveisLivres` (IN `v_idImobiliaria` INT(5))
+	-- SELECT Imovel.* FROM Imovel
+    -- WHERE Imovel.idImobiliaria = v_idImobiliaria AND 
+		-- Imovel.situacao = 'Disponivel' $$
 
 DELIMITER ;

@@ -3,5 +3,7 @@
 *Referenced
 *.classpath
 *.project
-bin
+*.settings
 *.class
+bin
+att

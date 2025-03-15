@@ -29,9 +29,8 @@ public class DataFuncionario {
     
     public Funcionario consultarFuncionario(Funcionario funcionario) {
         try {
-        	String sql = "CALL consultar_Funcionario(?);";
+        	String sql = "CALL consultar_Funcionario("+funcionario.getIdFuncionario()+");";
             PreparedStatement statement = connection.getConnection().prepareStatement(sql);
-            statement.setInt(1, funcionario.getIdFuncionario());
             ResultSet rs = statement.executeQuery();
             if (rs != null && rs.next()) {
                 funcionario.setIdFuncionario(rs.getInt("idFuncionario"));
