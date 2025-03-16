@@ -13,10 +13,6 @@ public class Proprietario extends Individuo {
 		this.idProprietario = idProprietario;
 	}
 	
-	public Proprietario() {
-		
-	}
-	
 	public Integer getIdProprietario() {
 		return idProprietario;
 	}

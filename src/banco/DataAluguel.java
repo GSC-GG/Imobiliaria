@@ -61,32 +61,6 @@ public class DataAluguel {
         }
     }
     
-    public void viraMesAluguel(Aluguel aluguel) {
-    	try {
-    		String sql = "CALL mes_Aluguel("+aluguel.getIdAluguel()+");";
-            PreparedStatement statement = connection.getConnection().prepareStatement(sql);
-            ResultSet rs = statement.executeQuery(sql);
-            if (rs != null && rs.next()) {
-            	LocalDate dataVencimento = rs.getObject("dataVencimento", LocalDate.class);
-            	LocalDate dataAtual = rs.getObject("CURDATE()", LocalDate.class);
-            	String status = rs.getString("situacao");
-            	
-            	if(dataAtual.isAfter(dataVencimento)) {
-            		Aluguel aluguelAntigo = consultarAluguel(idAluguel);
-            		Aluguel aluguelNovo = null;
-            		incluirAluguel(aluguelNovo, aluguelAntigo.getIdLocatario(), aluguelAntigo.getValorAluguel());
-            		
-            		if(status == "Pendente") {
-            			pagamentoAtrasado(idAluguel);
-            		}
-            	}
-            }
-    		
-    	} catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-    
     public void verificaPagamentoAlugueis() {
     	try {
     		String sql = "CALL verifica_Pagamento_Aluguel();";

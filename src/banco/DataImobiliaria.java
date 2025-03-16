@@ -117,8 +117,7 @@ public class DataImobiliaria {
 			if (rs != null && rs.next()) {
 				Proprietario proprietario;
 				while (rs.next()) {
-					proprietario = new Proprietario();
-					proprietario.setIdProprietario(rs.getInt("idProprietario"));
+					proprietario = new Proprietario(rs.getInt("idProprietario"));
 					proprietario = new DataProprietario().consultarProprietario(proprietario);
 					
 					if(rs.getString("situacao") != "Disponivel") {

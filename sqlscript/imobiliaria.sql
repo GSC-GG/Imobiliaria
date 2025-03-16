@@ -119,9 +119,9 @@ BEGIN
     INSERT INTO Imobiliaria (cnpj) VALUES (v_cnpj);
 END $$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `inserir_Imovel`(IN `v_idImobiliaria` INT, IN `v_endereco` VARCHAR(50))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `inserir_Imovel`(IN `v_idImobiliaria` INT(5), IN `v_endereco` VARCHAR(50))
 BEGIN
-	INSERT INTO Imovel (idImobiliaria, situacao, endereco, idAgenda, idLocatario) VALUES (v_idImobiliaria, 'Indisponivel', v_endereco, default, default);
+	INSERT INTO Imovel (idImobiliaria, situacao, endereco, idLocatario) VALUES (v_idImobiliaria, 'Indisponivel', v_endereco, default, default);
 END $$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `inserir_Locatario`(IN `v_nome` VARCHAR(50), IN `v_telefone` CHAR(11), IN `v_email` VARCHAR(50))
@@ -129,7 +129,7 @@ BEGIN
     INSERT INTO Locatario (nome, telefone, email, situacao) VALUES (v_nome, v_telefone, v_email, 'Desalojado');
 END $$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `inserir_Proposta`(IN `v_idContrato` INT, IN `v_valorAluguel` DOUBLE)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `inserir_Proposta`(IN `v_idContrato` INT(5), IN `v_valorAluguel` DOUBLE)
 BEGIN
     INSERT INTO Proposta (idContrato, valorAluguel) VALUES (v_idContrato, v_valorAluguel);
 END $$

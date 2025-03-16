@@ -3,7 +3,7 @@ package model;
 public class ImovelAlugado extends Imovel{
 	private Locatario locatario;
 	
-	public ImovelAlugado(Integer idImovel, String endereco, Imobiliaria imobiliaria, Proprietario proprietario, Locatario locatario) {
+	public ImovelAlugado(Integer idImovel, String endereco, Proprietario proprietario, Locatario locatario) {
 		super(idImovel, endereco, proprietario);
 		this.locatario = locatario;
 	}
