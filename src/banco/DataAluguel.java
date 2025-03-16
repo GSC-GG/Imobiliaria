@@ -87,9 +87,20 @@ public class DataAluguel {
         }
     }
     
-    public void pagamentoAtrasado(Integer idAluguel) {
+    public void verificaPagamentoAlugueis() {
     	try {
-    		String sql = "CALL mes_Aluguel("+idAluguel+");";
+    		String sql = "CALL verifica_Pagamento_Aluguel();";
+            PreparedStatement statement = connection.getConnection().prepareStatement(sql);
+            statement.execute();
+            statement.close();
+    	} catch (SQLException u) {
+            throw new RuntimeException(u);
+        }
+    }
+    
+    public void passaMesAluguel() {
+    	try {
+    		String sql = "CALL mes_Aluguel();";
             PreparedStatement statement = connection.getConnection().prepareStatement(sql);
             statement.execute();
             statement.close();

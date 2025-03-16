@@ -90,15 +90,6 @@ DELIMITER $$
 -- 	INSERT INTO VALUES;
 -- END $$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `inserir_Agenda`(IN `v_idAgenda` INT)
-BEGIN
-    INSERT INTO Agenda (idAgenda) VALUES (v_idAgenda);
-
-    UPDATE Imovel
-    SET idAgenda = v_idAgenda
-    WHERE idImovel = v_idAgenda;
-END $$
-
 CREATE DEFINER=`root`@`localhost` PROCEDURE `inserir_Aluguel`(IN `v_idLocatario` INT, IN `v_valor` DOUBLE, IN `v_dataVencimento` DATE)
 BEGIN
     INSERT INTO Aluguel (idLocatario, valor, dataVencimento, dataPagamento, situacao) VALUES (v_idLocatario, v_valor, v_dataVencimento, default, 'Pendente');
@@ -156,11 +147,6 @@ END $$
 CREATE DEFINER=`root`@`localhost` PROCEDURE `inserir_Vistoria`(IN `v_dataVistoria` DATE)
 BEGIN
     INSERT INTO Vistoria (dataVistoria, resultado) VALUES (v_dataVistoria, 'Pendente');
-END $$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `consultar_Agenda`(IN `v_idAgenda` INT)
-BEGIN
-    SELECT * FROM Agenda WHERE idAgenda = v_idAgenda;
 END $$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `consultar_Aluguel`(IN `v_idAluguel` INT)
@@ -223,20 +209,10 @@ BEGIN
     SELECT * FROM Visita WHERE idVisita = v_idVisita;
 END $$
 
--- CREATE DEFINER=`root`@`localhost` PROCEDURE `consultar_Visita_Agenda`(IN `v_idAgenda` INT)
--- BEGIN
---    SELECT * FROM Visita WHERE idAgenda = v_idAgenda AND situacao = 'Pendente';
--- END $$
-
 CREATE DEFINER=`root`@`localhost` PROCEDURE `consultar_Vistoria`(IN `v_idVistoria` INT)
 BEGIN
     SELECT * FROM Vistoria WHERE idVistoria = v_idVistoria;
 END $$
-
--- CREATE DEFINER=`root`@`localhost` PROCEDURE `consultar_Vistoria_Agenda`(IN `v_idAgenda` INT)
--- BEGIN
---     SELECT * FROM Vistoria WHERE idAgenda = v_idAgenda AND relatorio = 'Pendente';
--- END $$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `consultar_Ultimo_Proprietario`()
 BEGIN
@@ -354,14 +330,6 @@ BEGIN
     WHERE idAluguel = v_idAluguel;
 END $$
 
--- CREATE DEFINER=`root`@`localhost` PROCEDURE `mes_Aluguel` (IN `v_idAluguel` INT(5))
--- BEGIN
--- 	CASE
--- 		WHEN CURDATE(
--- 	SELECT Aluguel.dataVencimento, CURDATE(), situacao FROM Aluguel
---     WHERE idAluguel = v_idAluguel;
--- END $$
-
 CREATE DEFINER=`root`@`localhost` PROCEDURE `verifica_Pagamento_Aluguel` ()
 BEGIN
 	DECLARE v_idLocatario INT(5);
@@ -380,8 +348,16 @@ BEGIN
 	CALL encerrar_Contrato(v_idContrato);
             
 	UPDATE Aluguel
-    SET situacao = 'Atrasado', valorPagamento = valorPagamento * 1.25
-    WHERE CURDATE() > dataPagamento AND CURDATE() < dataVencimento;
+    SET situacao = 'Atrasado', valorPagamento = valorPagamento * 2.125
+    WHERE CURDATE() > dataPagamento AND CURDATE() <= dataVencimento;
+END $$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `mes_Aluguel` (IN `v_idAluguel` INT(5))
+BEGIN
+	UPDATE Aluguel
+    SET dataPagamento = ADDDATE(dataPagamento, INTERVAL 1 MONTH),
+    dataVencimento = ADDDATE(dataVencimento, INTERVAL 1 MONTH)
+    WHERE dataPagamento < CURDATE();
 END $$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `listar_Corretores` (IN `v_idImobiliaria` INT(5))
