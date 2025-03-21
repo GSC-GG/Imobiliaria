@@ -1,6 +1,6 @@
 package banco;
 
-import model.Agenda;
+import model.ImovelLivre;
 import model.Visita;
 
 import java.sql.PreparedStatement;
@@ -15,11 +15,11 @@ public class DataVisita {
         this.connection = new DBConnection();
     }
     
-    public void incluirVisita(Visita visita, Integer idAgenda) {
+    public void incluirVisita(ImovelLivre imovel, Visita visita) {
         try {
             String sql = "CALL inserir_Visita(?, ?);";
             PreparedStatement statement = connection.getConnection().prepareStatement(sql);
-            statement.setInt(1, idAgenda);
+            statement.setInt(1, imovel.getIdImovel());
             statement.setDate(2, java.sql.Date.valueOf(visita.getDataVisita()));
             statement.execute();
             statement.close();

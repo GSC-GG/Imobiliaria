@@ -1,5 +1,6 @@
 package banco;
 
+import model.ImovelLivre;
 import model.Vistoria;
 
 import java.sql.PreparedStatement;
@@ -14,11 +15,12 @@ public class DataVistoria {
         this.connection = new DBConnection();
     }
     
-    public void incluirVistoria(Vistoria vistoria) {
+    public void incluirVistoria(ImovelLivre imovel, Vistoria vistoria) {
         try {
-            String sql = "CALL inserir_Vistoria(?);";
+            String sql = "CALL inserir_Vistoria(?, ?);";
             PreparedStatement statement = connection.getConnection().prepareStatement(sql);
-            statement.setDate(1, java.sql.Date.valueOf(vistoria.getDataVistoria()));
+            statement.setInt(1, imovel.getIdImovel());
+            statement.setDate(2, java.sql.Date.valueOf(vistoria.getDataVistoria()));
             statement.execute();
             statement.close();
         } catch (SQLException u) {
@@ -30,17 +32,13 @@ public class DataVistoria {
         try {
             String sql = "CALL consultar_Vistoria("+vistoria.getIdVistoria()+");";
             PreparedStatement statement = connection.getConnection().prepareStatement(sql);
-            statement.setInt(1, vistoria.getIdVistoria());
             ResultSet rs = statement.executeQuery();
             if (rs != null && rs.next()) {
-                vistoria = new Vistoria();
-                /*    rs.getInt("idVistoria"),
-                    rs.getObject("Agenda"),
-                    rs.getObject("idCorretor"),
+                vistoria = new Vistoria(
+                    rs.getInt("idVistoria"),
                     rs.getObject("dataVistoria", LocalDate.class),
-                    rs.getString("resultado")
-                );*/
-                vistoria.setIdVistoria(rs.getInt("idVistoria"));
+                    rs.getString("situacao")
+                );
             } else {
             	return null;
             }
@@ -52,20 +50,17 @@ public class DataVistoria {
     }
     
     /*
-    public Vistoria consultarVistoriaAgenda(Integer idAgenda) {
+    public Vistoria consultarVistoriaAgenda(Agenda agenda) {
         Vistoria vistoria = null;
         try {
-            String sql = "CALL consultar_Vistoria_Agenda(?);";
+            String sql = "CALL consultar_Vistoria_Agenda("+agenda.getIdAgenda()+");";
             PreparedStatement statement = connection.getConnection().prepareStatement(sql);
-            statement.setInt(1, idAgenda);
             ResultSet rs = statement.executeQuery(sql);
             if (rs != null && rs.next()) {
                 vistoria = new Vistoria(
                     rs.getInt("idVistoria"),
-                    rs.getInt("idAgenda"),
-                    rs.getInt("idCorretor"),
                     rs.getObject("dataVistoria", LocalDate.class),
-                    rs.getString("resultado")
+                    rs.getString("situacao")
                 );
             }
         } catch (SQLException e) {
@@ -75,9 +70,9 @@ public class DataVistoria {
     }
     */
     
-    public void avaliarImovel(Integer idVistoria, String resultado) {
+    public void avaliarImovel(Vistoria vistoria, String resultado) {
     	try {
-    		String sql = "CALL avaliar_Imovel("+idVistoria+", "+resultado+");";
+    		String sql = "CALL avaliar_Imovel("+vistoria.getIdVistoria()+", "+resultado+");";
             PreparedStatement statement = connection.getConnection().prepareStatement(sql);
             statement.execute();
             statement.close();

@@ -12,7 +12,7 @@ import java.sql.SQLException;
 //import java.time.LocalDate;
 
 public class DataImovel {
-	private DBConnection connection;
+	protected DBConnection connection;
 	
 	public DataImovel() {
 		this.connection = new DBConnection();
@@ -57,14 +57,13 @@ public class DataImovel {
 	    return null;
 	}
 	
-	public Imovel consultarImovelPorIdProp(Imovel imovel) {
+	public Imovel consultarImovelPorProp(Proprietario proprietario) {
 	    try {
-	        String sql = "CALL consultar_ImovelIdProp("+imovel.getProprietario().getIdProprietario()+");";
+	        String sql = "CALL consultar_ImovelProp("+proprietario.getIdProprietario()+");";
 	        PreparedStatement statement = connection.getConnection().prepareStatement(sql);
 	        ResultSet rs = statement.executeQuery();
+			Imovel imovel;
 	        if (rs != null && rs.next()) {
-				Proprietario proprietario = new Proprietario(rs.getInt("idProprietario"));
-				proprietario = new DataProprietario().consultarProprietario(proprietario);
 				
 				imovel = new Imovel(
 					rs.getInt("idImovel"),

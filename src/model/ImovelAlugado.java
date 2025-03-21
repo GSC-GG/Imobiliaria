@@ -8,9 +8,9 @@ public class ImovelAlugado extends Imovel{
 		this.locatario = locatario;
 	}
 
-	public ImovelAlugado(Imovel imovel, Locatario idLocatario) {
+	public ImovelAlugado(Imovel imovel, Locatario locatario) {
 		super(imovel);
-		this.locatario = idLocatario;
+		this.locatario = locatario;
 	}
 
 	public Locatario getLocatario() {

@@ -139,14 +139,14 @@ BEGIN
     INSERT INTO Proprietario (nome, telefone, email) VALUES (v_nome, v_telefone, v_email);
 END $$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `inserir_Visita`(IN `v_dataVisita` DATE)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `inserir_Visita`(IN `v_idImovel` INT(5),IN `v_dataVisita` DATE)
 BEGIN
-    INSERT INTO Visita (dataVisita, situacao) VALUES (v_dataVisita, 'Pendente');
+    INSERT INTO Visita (idImovel, dataVisita, situacao) VALUES (v_dataVisita, 'Pendente');
 END $$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `inserir_Vistoria`(IN `v_dataVistoria` DATE)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `inserir_Vistoria`(IN `v_idImovel` INT(5),IN `v_dataVistoria` DATE)
 BEGIN
-    INSERT INTO Vistoria (dataVistoria, resultado) VALUES (v_dataVistoria, 'Pendente');
+    INSERT INTO Visita (idImovel, dataVistoria, situacao) VALUES (v_dataVistoria, 'Pendente');
 END $$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `consultar_Aluguel`(IN `v_idAluguel` INT)
@@ -184,7 +184,7 @@ BEGIN
     SELECT * FROM Imovel WHERE idImovel = v_idImovel;
 END $$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `consultar_ImovelIdProp`(IN `v_idProprietario` INT)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `consultar_ImovelProp`(IN `v_idProprietario` INT)
 BEGIN
 	SELECT * FROM Imovel WHERE idProprietario = v_idProprietario;
 END $$
@@ -284,6 +284,7 @@ BEGIN
     WHERE idContrato = v_idContrato;
 END $$
 
+-- falta apenas esse pra excluir a necessidade da classe Agenda
 CREATE DEFINER=`root`@`localhost` PROCEDURE `avaliar_Imovel`(IN `v_idVistoria` INT(5), IN `v_resultado` VARCHAR(11))
 BEGIN
 	DECLARE v_idAgenda INT(5);
@@ -368,13 +369,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `listar_Funcionarios` (IN `v_idImobi
 	SELECT Funcionario.* FROM Funcionario 
     WHERE Funcionario.idImobiliaria = v_idImobiliaria;
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `listar_Visitas` (IN `v_idAgenda` INT (5))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `listar_Visitas` (IN `v_idImovel` INT (5))
 	SELECT Visita.* FROM Visita
-    WHERE Visita.idAgenda = v_idAgenda $$
+    WHERE Visita.idImovel = v_idImovel $$
     
-CREATE DEFINER=`root`@`localhost` PROCEDURE `listar_Vistorias` (IN `v_idAgenda` INT (5))
+CREATE DEFINER=`root`@`localhost` PROCEDURE `listar_Vistorias` (IN `v_idImovel` INT (5))
 	SELECT Vistoria.* FROM Vistoria
-    WHERE Vistoria.idAgenda = v_idAgenda $$
+    WHERE Vistoria.idImovel = v_idImovel $$
     
 CREATE DEFINER=`root`@`localhost` PROCEDURE `listar_Alugueis` (IN `v_idLocatario` INT (5))
 	SELECT Aluguel.* FROM Aluguel
